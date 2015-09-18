@@ -13,6 +13,7 @@ var homeFbWall = new FacebookPageFeed({
 });
 ```
 ## what you need before use
+* Zepto.js or jQuery
 * [A Facebook App](https://developers.facebook.com/apps/)
 * App ID
 * [App Token](https://developers.facebook.com/tools/accesstoken/)
