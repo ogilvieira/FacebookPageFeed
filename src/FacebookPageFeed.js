@@ -40,13 +40,9 @@ var FacebookPageFeed =  function( params, callback ){
 			page_picture : response.picture.data.url,
 			page_name 	 : response.name
 		};
-
-		console.log()
-
 		for (var i = 0, len = response.feed.data.length; i < len; i++ ){
 			var node = {};
 			var val = response.feed.data[i];
-
 			node.post_text = val.message || '';
 			node.likes = val.likes === undefined ? 0 : val.likes.data.length;
 			node.post_cover = false;
@@ -56,14 +52,11 @@ var FacebookPageFeed =  function( params, callback ){
 					node.post_cover = val.attachments.data[0].media.image.src;
 				}
 			}
-
 			node.post_created_time = val.created_time;
 			that.wallresult.feed.push( node );
 		}
-
 		that.callback( that.wallresult.feed, that.wallresult.page );
 	};
-
 	that.init = function(){
 		that.loadData();
 	}();
