@@ -1,6 +1,6 @@
 # FacebookPageFeed.js
 
-A simple fanpage feed object.
+A simple javascript class that returns the feed of a specific page
 
 ```javascript
 var fbFeed = new FacebookPageFeed({
@@ -13,7 +13,6 @@ var fbFeed = new FacebookPageFeed({
 });
 ```
 ## what you need before use it
-* Zepto.js or jQuery
 * [A Facebook App](https://developers.facebook.com/apps/)
 * App ID
 * [App Token](https://developers.facebook.com/tools/accesstoken/)
