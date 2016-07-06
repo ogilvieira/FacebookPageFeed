@@ -17,7 +17,12 @@ var fbFeed = new FacebookPageFeed({
     pagename : 'FacebookforDevelopers',
     format: 'html',
     feedlimit : 5,
-    onLoad: function(res, format){
+    onLoad: function(res, format, data){
+      if(data && data.cover){
+        $('.jumbotron').css({'background-image' : 'url(\''+data.cover.source+'\')'});
+      } else {
+        $('.jumbotron').css({'background-image' : ''});
+      }
       if(format == 'html'){
         elResult.html('<div class="card-columns">'+res+'</div>');
       } else {

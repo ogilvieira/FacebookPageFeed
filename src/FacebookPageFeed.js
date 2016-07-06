@@ -8,13 +8,19 @@ var FacebookPageFeed = (function(defaultConfig){
 		token 		: null,
 		feedlimit	: 10,
 		format	: 'json', //json, html
-		template: function(page, post, postBody){
+		template: function(page, post){
+
+			var postBody = '';
+			postBody = '{{cover}}{{text}}';
+			postBody = postBody.replace("{{cover}}", '<a href="'+post.link+'" target="_blank"><img src="'+post.attachments.data[0].media.image.src+'" class="img-responsive"></a>');
+			postBody = postBody.replace("{{text}}", '<p class="card-text">'+privateObj.urlify(post.message)+'</p>');
+
 			var tpl = '\
 				<div class="card card-block">\
-					<div class="panel-heading" style="background-image: url(\''+page.cover+'\')">\
+					<div class="panel-heading"">\
 						<div class="media">\
 							<div class="media-left">\
-								<a href="'+page.link+'" target="_blank" style="background-image: url(\''+page.avatar+'\'); background-size: cover;"><img src="'+page.avatar+'"></a>\
+								<a href="'+page.link+'" target="_blank"><img src="'+page.avatar+'"></a>\
 							</div>\
 							<div class="media-body">\
 								<h4 class="media-heading"><a href="'+page.link+'" target="_blank">'+page.name+'</a><br><small>'+page.likes+' likes</small>\</h4>\
@@ -24,7 +30,7 @@ var FacebookPageFeed = (function(defaultConfig){
 					</div>\
 					<div class="panel-body">'+postBody+'</div>\
 					<div class="panel-footer">\
-						<a href="'+post.link+'" class="label label-danger" target="_blank">'+post.likes.data.length+' likes</a>\
+						<a href="'+post.link+'" class="label label-danger" target="_blank">'+((post.likes) ? post.likes.data.length : "0")+' likes</a>\
 					</div>\
 				</div>';
 
@@ -101,13 +107,8 @@ var FacebookPageFeed = (function(defaultConfig){
 	privateObj.formatResponse['html'] = function(data, template){
 		var data = privateObj.formatResponse['json'](data);
 		var html = '';
-		var postBody = '';
 		for(var i in data.posts){
-			postBody = '{{cover}}{{text}}';
-			postBody = postBody.replace("{{cover}}", '<a href="'+data.posts[i].link+'" target="_blank"><img src="'+data.posts[i].attachments.data[0].media.image.src+'" class="img-responsive"></a>');
-			postBody = postBody.replace("{{text}}", '<p class="card-text">'+privateObj.urlify(data.posts[i].message)+'</p>');
-
-			html += template(data.page, data.posts[i], postBody);
+			html += template(data.page, data.posts[i]);
 		};
 		return html;
 	};
@@ -118,12 +119,11 @@ var FacebookPageFeed = (function(defaultConfig){
 		FB.api("/"+newConfig.pagename, {
 				access_token : newConfig.token,
 				summary : true,
-				fields :"picture{url},name,cover,fan_count,link,posts.limit("+newConfig.feedlimit+"){attachments, likes, message, created_time, link, reactions}"
+				fields :"picture{url},name,cover,fan_count,link,posts.limit("+newConfig.feedlimit+"){attachments, likes, message, created_time, link}"
 			},
 			function (response) {
 				if (!response.error) {
-					console.log(response);
-					newConfig.onLoad(privateObj.formatResponse[newConfig.format](response, newConfig.template), newConfig.format);
+					newConfig.onLoad(privateObj.formatResponse[newConfig.format](response, newConfig.template), newConfig.format, response);
 				} else {
 					newConfig.onLoad(response.error, 'json');
 				}
