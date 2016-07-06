@@ -1,0 +1,20 @@
+.jumbotron {
+  background-size: cover;
+  background-position: center;
+  color: white;
+  background-color: #444;
+  text-shadow: 0 0 3px rgba(0,0,0,.8);
+}
+.card-columns .card {
+  padding: 0;
+}
+.card-columns .card .panel-heading {
+  background-size: cover;
+  background-position: center;
+  background: #444;
+}
+.card-columns .card .panel-heading,
+.card-columns .card .panel-heading a {
+  color: white;
+  text-shadow: 0 0 3px rgba(0,0,0,.4);
+}
