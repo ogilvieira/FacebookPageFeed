@@ -12,6 +12,7 @@
         <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
         <link rel="stylesheet" href="./assets/css/bootstrap.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/styles/default.min.css">
         <style>
             body {
                 /*padding-top: 50px;*/
@@ -32,7 +33,7 @@
         <h1>FacebookPageFeed</h1>
         <p>A simple javascript class that returns the feed of a specific page.</p>
         <p>
-          <a class="btn btn-success btn-lg" href="https://raw.githubusercontent.com/ogilvieira/FacebookPageFeed.js/master/src/FacebookPageFeed.js" target="_blank" role="button" download>Download</a>
+          <a class="btn btn-success btn-lg" href="https://raw.githubusercontent.com/ogilvieira/FacebookPageFeed/master/FacebookPageFeed.js" target="_blank" role="button" download>Download</a>
           <a class="btn btn-info btn-lg" href="https://github.com/ogilvieira/FacebookPageFeed" target="_blank" role="button">View on GitHub</a>
         </p>
         <p>
@@ -67,13 +68,61 @@
 
     <div class="container" id="result"></div>
 
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+            <pre class="custom">
+              <code class="javascript">
+                //initialize and set defaults
+                var fbFeed = new FacebookPageFeed({
+                  'appid'   : 'YOUR_APPID',
+                  'token'   : 'YOUR_APP_TOKEN',
+                  'pagename'  : 'PAGENAME_OR_PAGEID',
+                  'feedlimit' : 10,
+                  'format' : 'html', //json,
+                  'template' : function(page, post){
+                    //console.log(page, post);
+                    var tpl = '&lt;h1&gt;'+page.name+'&lt;/h1&gt;';
+                        tpl += '&lt;p&gt;'+post.message+'&lt;/p&gt;';
+                    return tpl;
+                  },
+                  onLoad: function(res){
+                    console.log(res); //the result
+                  }
+                });
+
+                fbFeed.get(); //work's!
+
+                fbFeed.get({
+                  pagename: 'FacebookforDevelopers',
+                  feedlimit: 30,
+                  format: 'json'
+                }); //reload with new settings
+              </code>
+            </pre>
+          <hr>
+          <h1>what you need before use it</h1>
+          <p>
+            <ul>
+              <li><a target="_blank" href="https://developers.facebook.com/apps/">A Facebook App</a></li>
+              <li>App ID</li>
+              <li><a target="_blank" href="https://developers.facebook.com/tools/accesstoken/">App Token</a></li>
+              <li><a target="_blank" href="https://developers.facebook.com/docs/javascript/quickstart">Graph API Javascript SDK v2.6</a></li>
+            </ul>
+          </p>
+        </div>
+      </div>
+    </div>
+
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="./assets/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.0.0/highlight.min.js"></script
 
         <script src="./assets/js/vendor/bootstrap.min.js"></script>
 
         <script src="./src/FacebookPageFeed.js"></script>
         <script src="./assets/js/main.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
