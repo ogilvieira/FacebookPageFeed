@@ -1,4 +1,4 @@
-# FacebookPageFeed.js
+# FacebookPageFeed.js [DEMO](http://ogilvieira.com.br/FacebookPageFeed/)
 
 A simple javascript class that returns the feed of a specific page
 
@@ -35,4 +35,4 @@ fbFeed.get({
 * App ID
 * [App Token](https://developers.facebook.com/tools/accesstoken/)
 * [Graph API Javascript SDK v2.6](https://developers.facebook.com/docs/javascript/quickstart)
->>>>>>> 6d86c4cdb95b57b71fca65cc17bb2982298aea8c
+
