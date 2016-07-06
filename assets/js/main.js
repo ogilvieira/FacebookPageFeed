@@ -22,7 +22,7 @@ var fbFeed = new FacebookPageFeed({
       var postBody = '';
       postBody = '{{cover}}{{text}}';
       postBody = postBody.replace("{{cover}}", '<a href="'+post.link+'" target="_blank"><img src="'+post.attachments.data[0].media.image.src+'" class="img-responsive"></a>');
-      postBody = postBody.replace("{{text}}", '<p class="card-text">'+privateObj.urlify(post.message)+'</p>');
+      postBody = postBody.replace("{{text}}", '<p class="card-text">'+post.message+'</p>');
 
       var tpl = '\
         <div class="card card-block">\
@@ -39,7 +39,7 @@ var fbFeed = new FacebookPageFeed({
           </div>\
           <div class="panel-body">'+postBody+'</div>\
           <div class="panel-footer">\
-            <a href="'+post.link+'" class="label label-danger" target="_blank">'+((post.likes) ? post.likes.data.length : "0")+' likes</a>\
+            <a href="'+post.link+'" class="label label-danger" target="_blank">'+post.likes+' likes</a>\
           </div>\
         </div>';
 

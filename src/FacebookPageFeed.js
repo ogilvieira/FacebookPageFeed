@@ -84,6 +84,8 @@ var FacebookPageFeed = (function(defaultConfig){
 		var data = privateObj.formatResponse['json'](data);
 		var html = '';
 		for(var i in data.posts){
+			data.posts[i].message = privateObj.urlify(data.posts[i].message);
+			data.posts[i].likes = ((data.posts[i].likes) ? data.posts[i].likes.data.length : 0);
 			html += template(data.page, data.posts[i]);
 		};
 		return html;
