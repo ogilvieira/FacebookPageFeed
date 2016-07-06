@@ -1,63 +1,161 @@
-var FacebookPageFeed =  function( params, callback ){
-	var that = this;
-	that.callback = callback; 
-	that.options = {
-		appid 	  	: params.appid,
-		pagename 	: params.pagename,
-		token 		: params.token,
-		feedlimit	: params.feedlimit || 10
+var FacebookPageFeed = (function(defaultConfig){
+
+	var obj = {};
+
+	obj.config = {
+		appid 	  : null,
+		pagename 	: null,
+		token 		: null,
+		feedlimit	: 10,
+		format	: 'json', //json, html
+		template: function(page, post, postBody){
+			var tpl = '\
+				<div class="card card-block">\
+					<div class="panel-heading" style="background-image: url(\''+page.cover+'\')">\
+						<div class="media">\
+							<div class="media-left">\
+								<a href="'+page.link+'" target="_blank" style="background-image: url(\''+page.avatar+'\'); background-size: cover;"><img src="'+page.avatar+'"></a>\
+							</div>\
+							<div class="media-body">\
+								<h4 class="media-heading"><a href="'+page.link+'" target="_blank">'+page.name+'</a><br><small>'+page.likes+' likes</small>\</h4>\
+								<a href="'+post.link+'" target="_blank" class="date">'+post.created_time+'</a>\
+							</div>\
+						</div>\
+					</div>\
+					<div class="panel-body">'+postBody+'</div>\
+					<div class="panel-footer">\
+						<a href="'+post.link+'" class="label label-danger" target="_blank">'+post.likes.data.length+' likes</a>\
+					</div>\
+				</div>';
+
+			return tpl;
+		},
+		onLoad: function(res){
+			console.log(res);
+		},
 	};
 
-	that.loadData = function(){
 
-		window.fbAsyncInit = function() {
+	var privateObj = {};
+	privateObj.extend = function(){
+    var extended = {};
+    var deep = false;
+    var i = 0;
+    var length = arguments.length;
 
-			FB.init({
-			  appId      : that.options.appid,
-			  xfbml      : true,
-			  version    : 'v2.4'
-			});
+    if ( Object.prototype.toString.call( arguments[0] ) === '[object Boolean]' ) {
+      deep = arguments[0];
+      i++;
+    }
 
-			FB.api("/"+that.options.pagename, {
-		    	access_token : that.options.token,
-		    	"fields":"feed.limit("+that.options.feedlimit+"){attachments, likes, message, created_time, link},picture{url},name"
-			    },
-			    function (response) {
-			    	if (!response.error) {
-			    		return that.formatResponse( response );
-					} else {
-			    		console.error( response.error );
-					}
-			    }
-		    );
-		};
+    var merge = function (obj) {
+      for ( var prop in obj ) {
+        if ( Object.prototype.hasOwnProperty.call( obj, prop ) ) {
+          // If deep merge and property is an object, merge properties
+          if ( deep && Object.prototype.toString.call(obj[prop]) === '[object Object]' ) {
+            extended[prop] = extend( true, extended[prop], obj[prop] );
+          } else {
+            extended[prop] = obj[prop];
+          }
+        }
+      }
+    };
+
+    for ( ; i < length; i++ ) {
+      var obj = arguments[i];
+      merge(obj);
+    }
+
+    return extended;
 	};
 
-	that.formatResponse = function( response ){
-		that.wallresult = {};
-		that.wallresult.feed = [];
-		that.wallresult.page = {
-			page_picture : response.picture.data.url,
-			page_name 	 : response.name
+	(function(){
+		obj.config = privateObj.extend(obj.config, defaultConfig);
+		delete defaultConfig;
+	})();
+
+	privateObj.fbIsInit = false;
+	privateObj.queue = [];
+	privateObj.urlify = function(text){
+		var text = text || "";
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+    });
+	};
+
+	privateObj.formatResponse = {};
+	privateObj.formatResponse['json'] = function(data){
+		var res = {};
+		res.page = {
+			name : data.name,
+			likes : data.fan_count,
+			link: data.link,
+			cover: data.cover.source,
+			avatar: data.picture.data.url
 		};
-		for (var i = 0, len = response.feed.data.length; i < len; i++ ){
-			var node = {};
-			var val = response.feed.data[i];
-			node.post_text = val.message || '';
-			node.likes = val.likes === undefined ? 0 : val.likes.data.length;
-			node.post_cover = false;
-			node.post_link = val.link;
-			if( val.attachments !== undefined ) {
-				if( val.attachments.data[0].media.image ){
-					node.post_cover = val.attachments.data[0].media.image.src;
+		res.posts = data.posts.data;
+		return res;
+	};
+
+	privateObj.formatResponse['html'] = function(data, template){
+		var data = privateObj.formatResponse['json'](data);
+		var html = '';
+		var postBody = '';
+		for(var i in data.posts){
+			postBody = '{{cover}}{{text}}';
+			postBody = postBody.replace("{{cover}}", '<a href="'+data.posts[i].link+'" target="_blank"><img src="'+data.posts[i].attachments.data[0].media.image.src+'" class="img-responsive"></a>');
+			postBody = postBody.replace("{{text}}", '<p class="card-text">'+privateObj.urlify(data.posts[i].message)+'</p>');
+
+			html += template(data.page, data.posts[i], postBody);
+		};
+		return html;
+	};
+
+
+
+	privateObj.callFB = function(newConfig){
+		FB.api("/"+newConfig.pagename, {
+				access_token : newConfig.token,
+				summary : true,
+				fields :"picture{url},name,cover,fan_count,link,posts.limit("+newConfig.feedlimit+"){attachments, likes, message, created_time, link, reactions}"
+			},
+			function (response) {
+				if (!response.error) {
+					console.log(response);
+					newConfig.onLoad(privateObj.formatResponse[newConfig.format](response, newConfig.template), newConfig.format);
+				} else {
+					newConfig.onLoad(response.error, 'json');
 				}
 			}
-			node.post_created_time = val.created_time;
-			that.wallresult.feed.push( node );
-		}
-		that.callback( that.wallresult.feed, that.wallresult.page );
+		);
+	}
+
+	window.fbAsyncInit = function() {
+		FB.init({
+		  appId      : obj.config.appid,
+		  xfbml      : true,
+		  version    : 'v2.6'
+		});
+		privateObj.fbIsInit = true;
+		for(var i in privateObj.queue){
+			privateObj.loadData(privateObj.queue[i]);
+		};
 	};
-	that.init = function(){
-		that.loadData();
-	}();
-};
+
+	privateObj.loadData = function(newConfig){
+		privateObj.callFB(newConfig);
+	};
+
+	obj.get = function(newConfig){
+		var newConfig = newConfig || {};
+				newConfig = privateObj.extend(obj.config, newConfig);
+		if(!privateObj.fbIsInit){
+				privateObj.queue.push(newConfig);
+		} else {
+			privateObj.loadData(newConfig);
+		}
+	};
+
+	return obj;
+});
