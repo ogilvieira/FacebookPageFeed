@@ -21,7 +21,7 @@ var fbFeed = new FacebookPageFeed({
 
       var postBody = '';
       postBody = '{{cover}}{{text}}';
-      if(post.attachments.data[0].media && post.attachments.data[0].media.image.src){
+      if(post.attachments && post.attachments.data[0].media && post.attachments.data[0].media.image.src){
         postBody = postBody.replace("{{cover}}", '<a href="'+post.link+'" target="_blank"><img src="'+post.attachments.data[0].media.image.src+'" class="img-responsive"></a>');
       } else {
         postBody = postBody.replace("{{cover}}", '');
