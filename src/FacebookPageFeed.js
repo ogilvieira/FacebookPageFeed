@@ -60,10 +60,10 @@ var FacebookPageFeed = (function(defaultConfig){
 	privateObj.queue = [];
 	privateObj.urlify = function(text){
 		var text = text || "";
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, function(url) {
-        return '<a href="' + url + '" target="_blank">' + url + '</a>';
-    });
+	    var urlRegex = /(https?:\/\/[^\s]+)/g;
+	    return text.replace(urlRegex, function(url) {
+	        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+	    });
 	};
 
 	privateObj.formatResponse = {};
@@ -85,7 +85,7 @@ var FacebookPageFeed = (function(defaultConfig){
 		var html = '';
 		for(var i in data.posts){
 			data.posts[i].message = privateObj.urlify(data.posts[i].message);
-			data.posts[i].likes = ((data.posts[i].likes) ? data.posts[i].likes.data.length : 0);
+			data.posts[i].likes = ((data.posts[i].likes) ? data.posts[i].likes.summary.total_count : 0);
 			html += template(data.page, data.posts[i]);
 		};
 		return html;
@@ -97,7 +97,7 @@ var FacebookPageFeed = (function(defaultConfig){
 		FB.api("/"+newConfig.pagename, {
 				access_token : newConfig.token,
 				summary : true,
-				fields :"picture{url},name,cover,fan_count,link,posts.limit("+newConfig.feedlimit+"){attachments, likes, message, created_time, link}"
+				fields :"picture{url},name,cover,fan_count,link,posts.limit("+newConfig.feedlimit+"){attachments, likes.limit(0).summary(true), message, created_time, link}"
 			},
 			function (response) {
 				if (!response.error) {
