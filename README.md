@@ -10,10 +10,10 @@ var fbFeed = new FacebookPageFeed({
 	'pagename'	: 'PAGENAME_OR_PAGEID',
 	'feedlimit'	: 10,
 	'format' 	: 'html', //json,
-	'dateFormat'	: function(date){
+	'dateFormat': function(date){
 		return date; //format date string with moment.js or others...
 	},
-	'likesFormat'	: function(likes){
+	'likesFormat': function(likes){
 		return likes; //format likes number...
 	},
 	'template' : function(page, post){
