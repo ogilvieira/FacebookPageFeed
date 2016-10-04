@@ -1,0 +1,25 @@
+{
+  "name": "FacebookPageFeed",
+  "version": "1.0.3",
+  "author": "",
+  "description": "A simple javascript class that returns the feed of a specific page.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ogilvieira/FacebookPageFeed.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ogilvieira/FacebookPageFeed/issues"
+  },
+  "homepage": "https://github.com/ogilvieira/FacebookPageFeed#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-uglify": "^2.0.0"
+  }
+}
