@@ -1,7 +1,3 @@
-/*! FacebookPageFeed (1.0.3) | Last build: 2016-10-03 */
-
-/*! FacebookPageFeed (1.0.3) | Last build: 2016-10-03 */
-
 ;(function(root) {
 	'use strict';
 	root.FacebookPageFeed = (function(defaultConfig){

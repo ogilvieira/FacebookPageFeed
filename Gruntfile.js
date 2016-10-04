@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
     uglify: {
       options: {
-        banner: '/*! <%= pkg.name %> (<%= pkg.version %>) | Last build: <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+        banner: '/*! <%= pkg.name %> (<%= pkg.version %>) by <%= pkg.author %> | Last build: <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       build: {
         src: 'src/<%= pkg.name %>.js',
