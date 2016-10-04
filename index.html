@@ -90,7 +90,7 @@
                     'template' : function(page, post){
                     //console.log(page, post);
                     var tpl = '&lt;h1&gt;'+page.name+'&lt;/h1&gt;';
-                        tpl += '&lt;p&gt;+post.message+'&lt;/p&gt;';
+                        tpl += '&lt;p&gt;'+post.message+'&lt;/p&gt;';
                       return tpl;
                     },
                     onLoad: function(res){
