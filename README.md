@@ -1,4 +1,4 @@
-# FacebookPageFeed.js [DEMO](http://ogilvieira.com.br/FacebookPageFeed/)
+# FacebookPageFeed.js [DEMO](http://ogilvieira.github.io/FacebookPageFeed/)
 
 A simple javascript class that returns the feed of a specific page
 
